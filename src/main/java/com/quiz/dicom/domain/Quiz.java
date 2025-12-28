@@ -13,6 +13,10 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "topic_id", nullable = false)
+    private Topic topic;
+
     @Column(name = "title", length = 300, nullable = false)
     private String title;
 
@@ -35,6 +39,9 @@ public class Quiz {
     // getters/setters
 
     public Long getId() { return id; }
+
+    public Topic getTopic() { return topic; }
+    public void setTopic(Topic topic) { this.topic = topic; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

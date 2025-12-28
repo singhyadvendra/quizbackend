@@ -13,7 +13,9 @@ public final class QuizMapper {
                 quiz.getTitle(),
                 quiz.getDescription(),
                 quiz.isActive(),
-                quiz.getCreatedAt()
+                quiz.getCreatedAt(),
+                quiz.getTopic().getCode(),
+                quiz.getTopic().getName()
         );
     }
 }

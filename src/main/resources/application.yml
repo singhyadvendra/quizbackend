@@ -64,7 +64,7 @@ spring:
             provider: linkedin
             client-authentication-method: client_secret_post
           github:
-            client-id: ${GITHUB_CLIENT_IDFq}
+            client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
             scope: user:email
             client-name: GitHub

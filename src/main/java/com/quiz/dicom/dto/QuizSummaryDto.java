@@ -7,5 +7,8 @@ public record QuizSummaryDto(
         String title,
         String description,
         boolean active,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        String topicCode,
+        String topicName
 ) {}
+
