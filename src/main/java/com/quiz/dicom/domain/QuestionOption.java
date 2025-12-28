@@ -35,6 +35,11 @@ public class QuestionOption {
     @Column(name = "is_correct", nullable = false)
     private boolean correct = false;
 
+
+
+    @Column(name = "score", nullable = false)
+    private int score;
+
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
@@ -53,6 +58,9 @@ public class QuestionOption {
 
     public boolean isCorrect() { return correct; }
     public void setCorrect(boolean correct) { this.correct = correct; }
+
+    public int getScore() { return score;  }
+    public void setScore(int score) { this.score = score; }
 
     public OffsetDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }

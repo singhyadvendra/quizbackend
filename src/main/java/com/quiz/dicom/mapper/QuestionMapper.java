@@ -2,9 +2,11 @@ package com.quiz.dicom.mapper;
 
 import com.quiz.dicom.domain.Question;
 import com.quiz.dicom.domain.QuestionOption;
+import com.quiz.dicom.domain.ScoringMode;
 import com.quiz.dicom.dto.OptionDto;
 import com.quiz.dicom.dto.QuestionDto;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 
@@ -13,6 +15,30 @@ public final class QuestionMapper {
     private QuestionMapper() {}
 
     public static QuestionDto toDto(Question question) {
+
+        // -------------------------------
+        // Compute MAX points per question
+        // -------------------------------
+        BigDecimal maxPoints;
+
+        if (question.getScoringMode() == ScoringMode.WEIGHTED) {
+            int maxOptionScore = question.getOptions()
+                    .stream()
+                    .mapToInt(QuestionOption::getScore)
+                    .max()
+                    .orElse(0);
+
+            maxPoints = BigDecimal.valueOf(maxOptionScore);
+        } else {
+            // BINARY / legacy
+            maxPoints = question.getPoints() == null
+                    ? BigDecimal.ZERO
+                    : question.getPoints();
+        }
+
+        // -------------------------------
+        // Map options (NO scores exposed)
+        // -------------------------------
         List<OptionDto> optionDtos = question.getOptions()
                 .stream()
                 .sorted(Comparator.comparingInt(QuestionOption::getOptionNo))
@@ -24,7 +50,7 @@ public final class QuestionMapper {
                 question.getQuestionNo(),
                 question.getType().name(),
                 question.getText(),
-                question.getPoints() == null ? "0" : question.getPoints().toPlainString(),
+                maxPoints.toPlainString(),   // ✅ FIXED
                 question.isRequired(),
                 optionDtos
         );
@@ -34,7 +60,8 @@ public final class QuestionMapper {
         return new OptionDto(
                 option.getId(),
                 option.getOptionNo(),
-                option.getText()
+                option.getText(),
+                option.getScore()
         );
     }
 }

@@ -64,8 +64,8 @@ spring:
             provider: linkedin
             client-authentication-method: client_secret_post
           github:
-            client-id: ${GITHUB_CLIENT_ID:Ov23libr9DZFU4YyRFqH}
-            client-secret: ${GITHUB_CLIENT_SECRET:c3b65ef284190116b5929862800df60154432905}
+            client-id: ${GITHUB_CLIENT_IDFq}
+            client-secret: ${GITHUB_CLIENT_SECRET}
             scope: user:email
             client-name: GitHub
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"

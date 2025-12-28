@@ -33,6 +33,10 @@ public class Question {
     @Column(name = "question_type", length = 16, nullable = false)
     private QuestionType type;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "scoring_mode", length = 16, nullable = false)
+    private ScoringMode scoringMode = ScoringMode.BINARY;
+
     @Column(name = "text", nullable = false)
     private String text;
 
@@ -64,6 +68,9 @@ public class Question {
 
     public QuestionType getType() { return type; }
     public void setType(QuestionType type) { this.type = type; }
+
+    public ScoringMode getScoringMode() {   return scoringMode; }
+    public void setScoringMode(ScoringMode scoringMode) { this.scoringMode = scoringMode; }
 
     public String getText() { return text; }
     public void setText(String text) { this.text = text; }

@@ -1,8 +1,9 @@
+// com.quiz.dicom.dto.OptionDto.java
 package com.quiz.dicom.dto;
 
 public record OptionDto(
         Long id,
-        int optionNo,
-        String text
-) {
-}
+        Integer optionNo,
+        String text,
+        Integer score // <-- ADD THIS
+) {}
