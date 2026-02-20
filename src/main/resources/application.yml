@@ -1,0 +1,118 @@
+server:
+  address: 0.0.0.0
+  port: 8080
+  forward-headers-strategy: native
+app:
+  admin:
+    emails:
+      - singhyadvendra@gmail.com
+  frontend:
+    origin: ${FRONTEND_URL:http://localhost:5173}
+  backend:
+    base-url: ${BACKEND_BASE_URL:http://localhost:8080}
+
+spring:
+  application:
+    name: quiz-dicom
+
+  # -------------------------
+  # Database (PostgreSQL)
+  # -------------------------
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/quiz_db
+    username: ${DB_USERNAME:quiz_admin}
+    password: ${DB_PASSWORD:quiz_secret}
+    driver-class-name: org.postgresql.Driver
+
+  # -------------------------
+  # JPA / Hibernate
+  # -------------------------
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate   # use Flyway migrations; validate schema on startup
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  # -------------------------
+  # Flyway (migrations)
+  # -------------------------
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # -------------------------
+  # OAuth2 Login (Google + LinkedIn)
+  # -------------------------
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:client_id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:cient_secret}
+            scope: openid, profile, email
+            redirect-uri: "${app.backend.base-url}/login/oauth2/code/{registrationId}"
+
+          linkedin:
+            client-id: ${LINKEDIN_CLIENT_ID:client_id}
+            client-secret: ${LINKEDIN_CLIENT_SECRET:cient_secret}
+            scope: openid,profile,email
+            authorization-grant-type: authorization_code
+            redirect-uri: "${app.backend.base-url}/login/oauth2/code/{registrationId}"
+            client-authentication-method: client_secret_post
+          github:
+            client-id: ${GITHUB_CLIENT_ID:client_id}
+            client-secret: ${GITHUB_CLIENT_SECRET:client_secret}
+            scope: user:email
+            client-name: GitHub
+            redirect-uri: "${app.backend.base-url}/login/oauth2/code/{registrationId}"
+        provider:
+          linkedin:
+            authorization-uri: https://www.linkedin.com/oauth/v2/authorization
+            token-uri: https://www.linkedin.com/oauth/v2/accessToken
+            user-info-uri: https://api.linkedin.com/v2/userinfo
+            user-name-attribute: sub
+            issuer-uri: https://www.linkedin.com/oauth
+
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: login
+
+# -------------------------
+# Logging (optional, helpful during setup)
+# -------------------------
+logging:
+  level:
+    root: INFO
+    jdk.event.security: INFO
+
+    # Your application
+#    com.quiz.dicom: TRACE
+
+    # Spring Security (FULL)
+    org.springframework.security: TRACE
+    org.springframework.security.web: TRACE
+    org.springframework.security.oauth2: TRACE
+    org.springframework.http.client: TRACE
+    org.springframework.security.oauth2.client: TRACE
+    org.springframework.security.oauth2.client.endpoint: TRACE
+    org.springframework.security.oauth2.core.endpoint: TRACE
+    org.springframework.security.oauth2.client.registration: TRACE
+    # Web requests
+    org.springframework.web.client: DEBUG
+    org.springframework.web.client.DefaultRestClient: TRACE
+
+#    # Hibernate (SQL + parameters)
+#    org.hibernate.SQL: TRACE
+#    org.hibernate.orm.jdbc.bind: TRACE
+#    org.hibernate.type.descriptor.sql: TRACE
+
+    # HTTP clients (OAuth token calls)
+    org.springframework.web.client.RestTemplate: TRACE

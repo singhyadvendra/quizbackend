@@ -1,0 +1,59 @@
+-- Seed: one quiz with questions + options
+-- Uses deterministic IDs via RETURNING so foreign keys are correct.
+
+-- 1) Quiz
+WITH inserted_quiz AS (
+  INSERT INTO quiz (title, description, active, created_at)
+  VALUES (
+    'DICOM + Spring Boot Basics Quiz',
+    'Practice quiz for DICOM concepts and Spring Boot fundamentals.',
+    true,
+    now()
+  )
+  RETURNING id
+),
+
+-- 2) Questions
+q1 AS (
+  INSERT INTO question (quiz_id, question_no, type, text, points, required, created_at)
+  SELECT id, 1, 'SINGLE', 'What is Spring Boot?', 1.0, true, now()
+  FROM inserted_quiz
+  RETURNING id, quiz_id
+),
+q2 AS (
+  INSERT INTO question (quiz_id, question_no, type, text, points, required, created_at)
+  SELECT id, 2, 'MULTI', 'Which of the following are valid HTTP methods?', 2.0, true, now()
+  FROM inserted_quiz
+  RETURNING id, quiz_id
+),
+q3 AS (
+  INSERT INTO question (quiz_id, question_no, type, text, points, required, created_at)
+  SELECT id, 3, 'SINGLE', 'In DICOM, a UID is primarily used to…', 1.0, true, now()
+  FROM inserted_quiz
+  RETURNING id, quiz_id
+)
+
+-- 3) Options
+INSERT INTO question_option (question_id, option_no, text, is_correct, created_at)
+SELECT q1.id, 1, 'A database', false, now() FROM q1
+UNION ALL
+SELECT q1.id, 2, 'A Java framework for building applications', true, now() FROM q1
+UNION ALL
+SELECT q1.id, 3, 'A browser', false, now() FROM q1
+
+UNION ALL
+SELECT q2.id, 1, 'GET', true, now() FROM q2
+UNION ALL
+SELECT q2.id, 2, 'POST', true, now() FROM q2
+UNION ALL
+SELECT q2.id, 3, 'FETCH', false, now() FROM q2
+UNION ALL
+SELECT q2.id, 4, 'DELETE', true, now() FROM q2
+
+UNION ALL
+SELECT q3.id, 1, 'Compress images', false, now() FROM q3
+UNION ALL
+SELECT q3.id, 2, 'Uniquely identify DICOM objects/studies/series', true, now() FROM q3
+UNION ALL
+SELECT q3.id, 3, 'Encrypt network traffic', false, now() FROM q3
+;
